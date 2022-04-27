@@ -1,12 +1,16 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
-apply plugin: 'application'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'com.gorylenko.gradle-git-properties'
-apply plugin: 'org.ajoberstar.grgit'
-apply plugin: 'kotlin'
-apply plugin: 'kotlin-spring'
-apply plugin: "com.adarshr.test-logger"
+plugins {
+    id "application"
+    id "com.gorylenko.gradle-git-properties"
+//    id "org.sonarqube"
+    id "org.jetbrains.kotlin.jvm"
+    id "org.jetbrains.kotlin.plugin.allopen"
+    id "com.adarshr.test-logger"
+    id "io.spring.dependency-management"
+    id "org.springframework.boot"
+    id "org.ajoberstar.grgit"
+}
 
 description = 'Play audio to discord voice channels'
 mainClassName = "lavalink.server.Launcher"
@@ -19,7 +23,7 @@ bootJar {
     archiveName = "Lavalink.jar"
 }
 
-sourceCompatibility = targetCompatibility = 11
+sourceCompatibility = targetCompatibility = "17"
 
 bootRun {
     //compiling tests during bootRun increases the likelihood of catching broken tests locally instead of on the CI
@@ -34,35 +38,35 @@ bootRun {
 }
 
 dependencies {
-    compile (group: 'moe.kyokobot.koe', name: 'core', version: koeVersion) {
+    implementation (group: 'moe.kyokobot.koe', name: 'core', version: koeVersion) {
         // This version of SLF4J does not recognise Logback 1.2.3
         exclude group: "org.slf4j", module: "slf4j-api"
     }
-    compile group: 'moe.kyokobot.koe', name: 'ext-udpqueue', version: koeVersion
-    compile group: 'com.github.walkyst', name: 'lavaplayer-fork', version: '1.3.96'
-    //compile group: 'com.sedmelluq', name: 'lavaplayer', version: lavaplayerVersion
-    compile(group: 'com.sedmelluq', name: 'lavaplayer-ext-youtube-rotator', version: lavaplayerIpRotatorVersion) {
+    implementation "moe.kyokobot.koe:ext-udpqueue:$koeVersion"
+    implementation "com.github.walkyst:lavaplayer-fork:1.3.96"
+    //implementation "com.sedmelluq:lavaplayer:$lavaplayerVersion"
+    implementation(group: 'com.sedmelluq', name: 'lavaplayer-ext-youtube-rotator', version: lavaplayerIpRotatorVersion) {
         exclude group: 'com.sedmelluq', module: 'lavaplayer'
     }
-    compile group: 'com.github.natanbc', name: 'lavadsp', version: lavaDspVersion
-    compile group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlinVersion
+    implementation "com.github.natanbc:lavadsp:$lavaDspVersion"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
 
-    compile group: 'org.springframework', name: 'spring-websocket', version: springWebSocketVersion
-    compile group: 'ch.qos.logback', name: 'logback-classic', version: logbackVersion
-    compile group: 'io.sentry', name: 'sentry-logback', version: sentryLogbackVersion
-    compile group: 'com.github.oshi', name: 'oshi-core', version: oshiVersion
-    compile group: 'org.json', name: 'json', version: jsonOrgVersion
-    compile group: 'com.google.code.gson', name: 'gson', version: gsonVersion
-    compile(group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: springBootVersion) {
+    implementation "org.springframework:spring-websocket:$springWebSocketVersion"
+    implementation "ch.qos.logback:logback-classic:$logbackVersion"
+    implementation "io.sentry:sentry-logback:$sentryLogbackVersion"
+    implementation "com.github.oshi:oshi-core:$oshiVersion"
+    implementation "org.json:json:$jsonOrgVersion"
+    implementation "com.google.code.gson:gson:$gsonVersion"
+    implementation(group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: springBootVersion) {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
     }
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-undertow', version: springBootVersion
+    implementation "org.springframework.boot:spring-boot-starter-undertow:$springBootVersion"
     compileOnly group: 'com.github.spotbugs', name: 'spotbugs-annotations', version: spotbugsAnnotationsVersion
 
-    compile group: 'io.prometheus', name: 'simpleclient', version: prometheusVersion
-    compile group: 'io.prometheus', name: 'simpleclient_hotspot', version: prometheusVersion
-    compile group: 'io.prometheus', name: 'simpleclient_logback', version: prometheusVersion
-    compile group: 'io.prometheus', name: 'simpleclient_servlet', version: prometheusVersion
+    implementation "io.prometheus:simpleclient:$prometheusVersion"
+    implementation "io.prometheus:simpleclient_hotspot:$prometheusVersion"
+    implementation "io.prometheus:simpleclient_logback:$prometheusVersion"
+    implementation "io.prometheus:simpleclient_servlet:$prometheusVersion"
 
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: springBootVersion
 }
@@ -88,12 +92,12 @@ build {
 
 compileKotlin {
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
 }
 compileTestKotlin {
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
 }
 
